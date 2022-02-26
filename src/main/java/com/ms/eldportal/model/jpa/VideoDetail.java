@@ -24,4 +24,6 @@ public class VideoDetail {
     private Date creationTime;
     private Long totalNoOfLikes;
     private Long rating;
+    private String vttURL;
+    private String thumbneilURL;
 }

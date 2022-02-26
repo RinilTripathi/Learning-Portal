@@ -18,6 +18,8 @@ public class VideoDetailVo implements Comparable<VideoDetailVo> {
     private Long totalNoOfLikes;
     private Long rating;
     private Boolean like;
+    private String vtt;
+    private String thumbneil;
 
     @Override
     public int compareTo(VideoDetailVo o) {

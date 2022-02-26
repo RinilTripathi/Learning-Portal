@@ -167,6 +167,8 @@ public class VideoService {
                 videoDetailVo.setTotalNoOfLikes(videoDetail.getTotalNoOfLikes());
                 videoDetailVo.setId(videoDetail.getId());
                 videoDetailVo.setCreationTime(videoDetail.getCreationTime());
+                videoDetailVo.setVtt(videoDetail.getVttURL());
+                videoDetailVo.setThumbneil(videoDetail.getThumbneilURL());
                 videoDetailVoList.add(videoDetailVo);
             });
             return loginResponse;
@@ -220,6 +222,8 @@ public class VideoService {
                 videoDetailVo.setTotalNoOfLikes(videoDetail.getTotalNoOfLikes());
                 videoDetailVo.setId(videoDetail.getId());
                 videoDetailVo.setCreationTime(videoDetail.getCreationTime());
+                videoDetailVo.setVtt(videoDetail.getVttURL());
+                videoDetailVo.setThumbneil(videoDetail.getThumbneilURL());
                 videoDetailVoList.add(videoDetailVo);
             });
             Collections.sort(categoryVo.getVideoList());
@@ -270,6 +274,8 @@ public class VideoService {
                 videoDetailVo.setTotalNoOfLikes(videoDetail.getTotalNoOfLikes());
                 videoDetailVo.setId(videoDetail.getId());
                 videoDetailVo.setCreationTime(videoDetail.getCreationTime());
+                videoDetailVo.setVtt(videoDetail.getVttURL());
+                videoDetailVo.setThumbneil(videoDetail.getThumbneilURL());
                 videoDetailVoList.add(videoDetailVo);
             });
             Collections.sort(categoryVo.getVideoList());
