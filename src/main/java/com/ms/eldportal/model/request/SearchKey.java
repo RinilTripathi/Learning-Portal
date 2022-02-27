@@ -6,5 +6,6 @@ import lombok.Data;
 public class SearchKey {
     private String userId;
     private String searchValue;
+    private String category;
 
 }

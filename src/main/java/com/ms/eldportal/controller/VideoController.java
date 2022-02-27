@@ -35,7 +35,7 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
-
+import java.util.Locale;
 
 
 @RestController
@@ -88,34 +88,42 @@ public class VideoController {
 
     @PostMapping(value="search/data", consumes = MediaType.APPLICATION_JSON_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE)
     public LoginResponse category(@RequestBody SearchKey searchKey, HttpServletRequest httpServletRequest) throws URISyntaxException, JsonProcessingException {
-        System.out.println("key:"+ searchKey);
+        System.out.println("key:" + searchKey);
 
-        String baseUrl= ServletUriComponentsBuilder.fromRequestUri(httpServletRequest)
+        String baseUrl = ServletUriComponentsBuilder.fromRequestUri(httpServletRequest)
                 .replacePath(null)
                 .build()
                 .toUriString();
+        LoginResponse loginResponse = new LoginResponse();
+        if (searchKey.getSearchValue() != null) {
+            RestTemplate restTemplate = new RestTemplate();
+            URI uri = new URI("https://eldsearchservicesnew.search.windows.net/indexes/azureblob-index/docs/search?api-version=2021-04-30-Preview");
+            SKey body = new SKey();
+            body.setSearch(searchKey.getSearchValue());
 
-        RestTemplate restTemplate = new RestTemplate();
-        URI uri = new URI("https://eldsearchservicesnew.search.windows.net/indexes/azureblob-index/docs/search?api-version=2021-04-30-Preview");
-        SKey body = new SKey();
-        body.setSearch(searchKey.getSearchValue());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.set("api-key", "D729AD21457715934C7F50A09C98B260");
-        HttpEntity<SKey> request = new HttpEntity<SKey>(body, headers);
-        ObjectMapper mapper = new ObjectMapper();
-        ResponseEntity<String> jsonObject = restTemplate.postForEntity(uri, request, String.class);
-        Root root = mapper.readValue(jsonObject.getBody(), Root.class);
-        List<String> fname = new ArrayList<>();
-        if(root.getValue()!=null){
-            for (int i = 0; i < root.getValue().size(); i++){
-                fname.add(root.getValue().get(i).content.getFileName());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+            headers.set("api-key", "D729AD21457715934C7F50A09C98B260");
+            HttpEntity<SKey> request = new HttpEntity<SKey>(body, headers);
+            ObjectMapper mapper = new ObjectMapper();
+            ResponseEntity<String> jsonObject = restTemplate.postForEntity(uri, request, String.class);
+            Root root = mapper.readValue(jsonObject.getBody(), Root.class);
+            List<String> fname = new ArrayList<>();
+            if (root.getValue() != null) {
+                for (int i = 0; i < root.getValue().size(); i++) {
+                    fname.add(root.getValue().get(i).content.getFileName());
+                }
+            } else {
+                return new LoginResponse();
             }
-        }else{
-            return new LoginResponse();
+            loginResponse = service.getSearchResults(searchKey, fname, baseUrl);
+        } else {
+            CategoryRequest categoryRequest = new CategoryRequest();
+            categoryRequest.setCategory(searchKey.getCategory().toLowerCase());
+            categoryRequest.setUserId(searchKey.getUserId());
+            loginResponse = service.getCategoryList(categoryRequest, baseUrl);
         }
-        return service.getSearchResults(searchKey, fname,baseUrl);
+        return loginResponse;
     }
 }
